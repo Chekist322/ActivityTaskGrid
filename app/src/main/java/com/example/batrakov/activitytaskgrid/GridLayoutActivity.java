@@ -13,48 +13,57 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import java.util.ArrayList;
 
+/**
+ * Main app activity.
+ * Provide browsing list as grid.
+ */
 public class GridLayoutActivity extends AppCompatActivity {
 
-    private ArrayList<Cat> mListData;
     private RecyclerView mGridView;
     private CatAdapter mGridAdapter;
-    private GridLayoutManager mManager;
     private static final String CAT_ARRAY = "cat array";
     private static final String CAT_INDEX = "cat index";
+    private static final int PORTRAIT_COL_SPAN = 2;
+    private static final int LANDSCAPE_COL_SPAN = 3;
+    private static final int PARSE_STEP = 3;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle aSavedInstanceState) {
 
-        super.onCreate(savedInstanceState);
+        super.onCreate(aSavedInstanceState);
         setContentView(R.layout.grid_layout);
         mGridView = (RecyclerView) findViewById(R.id.gridView);
-        mListData = new ArrayList<>();
+        ArrayList<Cat> listData = new ArrayList<>();
         if (mGridAdapter == null) {
-            mGridAdapter = new CatAdapter(mListData);
+            mGridAdapter = new CatAdapter(listData);
         }
-        mManager = new GridLayoutManager(this, 2);
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
-            mManager.setSpanCount(2);
+        GridLayoutManager manager = new GridLayoutManager(this, PORTRAIT_COL_SPAN);
+
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            manager.setSpanCount(PORTRAIT_COL_SPAN);
         } else {
-            mManager.setSpanCount(3);
+            manager.setSpanCount(LANDSCAPE_COL_SPAN);
         }
 
-        mGridView.setLayoutManager(mManager);
+        mGridView.setLayoutManager(manager);
         mGridView.setAdapter(mGridAdapter);
-        mGridAdapter.replaceData(mListData);
+        mGridAdapter.replaceData(listData);
 
         ArrayList<String> stringArrayList;
         if (this.getIntent().hasExtra(CAT_ARRAY)) {
             stringArrayList = this.getIntent().getStringArrayListExtra(CAT_ARRAY);
-            for (int i = 0; i < stringArrayList.size(); i += 3) {
-                mListData.add(new Cat(stringArrayList.get(i),
+            for (int i = 0; i < stringArrayList.size(); i += PARSE_STEP) {
+                listData.add(new Cat(stringArrayList.get(i),
                         stringArrayList.get(i + 1),
                         stringArrayList.get(i + 2)));
             }
         }
     }
 
-    private class CatHolder extends RecyclerView.ViewHolder {
+    /**
+     * Holder for RecyclerView Adapter.
+      */
+    private final class CatHolder extends RecyclerView.ViewHolder {
 
         private View mView;
         private TextView mName;
@@ -62,14 +71,22 @@ public class GridLayoutActivity extends AppCompatActivity {
         private TextView mAge;
         private Cat mCat;
 
-        private CatHolder(View itemView) {
-            super(itemView);
+        /**
+         * Constructor.
+         * @param aItemView item view
+         */
+        private CatHolder(View aItemView) {
+            super(aItemView);
             mView = itemView;
             mName = mView.findViewById(R.id.name);
             mBreed = mView.findViewById(R.id.breed);
             mAge = mView.findViewById(R.id.age);
         }
 
+        /**
+         * View fill.
+         * @param aCat cat from list
+         */
         void bindView(Cat aCat) {
             mCat = aCat;
             mName.setText(mCat.getName());
@@ -78,45 +95,56 @@ public class GridLayoutActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Adapter for RecyclerView.
+     */
     private class CatAdapter extends RecyclerView.Adapter<CatHolder> {
 
         private ArrayList<Cat> mList;
 
+        /**
+         * Constructor.
+         * @param aList target list for fill.
+         */
         CatAdapter(ArrayList<Cat> aList) {
             mList = aList;
         }
 
+        /**
+         * List updating.
+         * @param aList new target list.
+         */
         void replaceData(ArrayList<Cat> aList) {
             mList = aList;
             notifyDataSetChanged();
         }
 
         @Override
-        public CatHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View rowView = LayoutInflater.from(parent.getContext()).inflate(R.layout.grid_item, parent, false);
+        public CatHolder onCreateViewHolder(ViewGroup aParent, int aViewType) {
+            View rowView = LayoutInflater.from(aParent.getContext()).inflate(R.layout.grid_item, aParent, false);
             rowView.setOnClickListener(mOnClickListener);
             return new CatHolder(rowView);
         }
 
         private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
             @Override
-            public void onClick(final View view) {
+            public void onClick(final View aView) {
                 Intent intent = new Intent();
-                intent.putExtra(CAT_INDEX, mGridView.getChildLayoutPosition(view) + 1);
+                intent.putExtra(CAT_INDEX, mGridView.getChildLayoutPosition(aView) + 1);
                 setResult(RESULT_OK, intent);
                 finish();
             }
         };
 
         @Override
-        public void onBindViewHolder(CatHolder holder, int position) {
-            Cat cat = mList.get(position);
-            holder.bindView(cat);
+        public void onBindViewHolder(CatHolder aHolder, int aPosition) {
+            Cat cat = mList.get(aPosition);
+            aHolder.bindView(cat);
         }
 
         @Override
-        public long getItemId(int i) {
-            return i;
+        public long getItemId(int aIndex) {
+            return aIndex;
         }
 
         @Override
