@@ -9,11 +9,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.example.batrakov.activitytaskgrid.GridLayoutActivity">
+        <activity
+            android:name="com.example.batrakov.activitytaskgrid.GridLayoutActivity">
             <intent-filter
                 android:icon="@mipmap/ic_launcher"
                 android:label="@string/dataType">
                 <action android:name="com.example.batrakov.activitytaskgrid.ACTION" />
+                <action android:name="android.intent.action.VIEW"/>
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>

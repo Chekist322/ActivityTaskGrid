@@ -5,7 +5,7 @@
     <color name="colorAccent">#a7ffeb</color>
     <color name="colorPrimaryLowOpacity">#8701786b</color>
     <color name="none">#00ffffff</color>
-    <color name="colorLigtBlack">#bc020202</color>
+    <color name="colorLigtBlack">#9b020202</color>
     <color name="black">#000</color>
     <color name="white">#ffffff</color>
 </resources>

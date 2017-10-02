@@ -7,7 +7,7 @@
     android:background="?attr/colorButtonNormal"
     tools:context="com.example.batrakov.activitytaskgrid.GridLayoutActivity">
 
-    <GridView xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/gridView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
