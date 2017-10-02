@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="addTitle">Регистрируем нового котейку!</string>
+    <string name="age">Возраст</string>
+    <string name="ageError">Используйте только числа для указания возраста!</string>
+    <string name="breed">Порода</string>
+    <string name="breedError">Используйте только буквы для указания породы!</string>
+    <string name="name">Кличка</string>
+    <string name="nameError">Используйте только буквы для указания клички!</string>
+    <string name="registerNewCat">Зарегистрировать</string>
+</resources>
