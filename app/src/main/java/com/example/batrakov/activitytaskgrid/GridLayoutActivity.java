@@ -21,6 +21,8 @@ public class GridLayoutActivity extends AppCompatActivity {
 
     private RecyclerView mGridView;
     private CatAdapter mGridAdapter;
+    private ArrayList<Cat> mGridData;
+    private GridLayoutManager mManager;
     private static final String CAT_ARRAY = "cat array";
     private static final String CAT_INDEX = "cat index";
     private static final int PORTRAIT_COL_SPAN = 2;
@@ -28,35 +30,59 @@ public class GridLayoutActivity extends AppCompatActivity {
     private static final int PARSE_STEP = 3;
 
     @Override
-    protected void onCreate(Bundle aSavedInstanceState) {
+    protected void onSaveInstanceState(Bundle aOutState) {
+        super.onSaveInstanceState(aOutState);
+        aOutState.putSerializable(CAT_ARRAY, mGridData);
+    }
 
+    @Override
+    protected void onCreate(Bundle aSavedInstanceState) {
         super.onCreate(aSavedInstanceState);
+        if (aSavedInstanceState != null) {
+            initialize();
+            if (aSavedInstanceState.getSerializable(CAT_ARRAY) instanceof ArrayList) {
+                mGridData = (ArrayList<Cat>) aSavedInstanceState.getSerializable(CAT_ARRAY);
+                mGridView.setLayoutManager(mManager);
+                mGridView.setAdapter(mGridAdapter);
+                mGridAdapter.replaceData(mGridData);
+            }
+        } else {
+        if (this.getIntent().hasExtra(CAT_ARRAY)) {
+            initialize();
+            mGridData = new ArrayList<>();
+            parseArrayList();
+            mGridView.setLayoutManager(mManager);
+            mGridView.setAdapter(mGridAdapter);
+            mGridAdapter.replaceData(mGridData);
+            }
+        }
+    }
+
+    /**
+     * Parse incoming String ArrayList to Cat ArrayList.
+     */
+    private void parseArrayList() {
+        ArrayList<String> stringArrayList;
+        stringArrayList = this.getIntent().getStringArrayListExtra(CAT_ARRAY);
+        for (int i = 0; i < stringArrayList.size(); i += PARSE_STEP) {
+            mGridData.add(new Cat(stringArrayList.get(i),
+                    stringArrayList.get(i + 1),
+                    stringArrayList.get(i + 2)));
+        }
+    }
+
+    /**
+     *  Variables initialization.
+     */
+    private void initialize() {
         setContentView(R.layout.grid_layout);
         mGridView = (RecyclerView) findViewById(R.id.gridView);
-        ArrayList<Cat> listData = new ArrayList<>();
-        if (mGridAdapter == null) {
-            mGridAdapter = new CatAdapter(listData);
-        }
-        GridLayoutManager manager = new GridLayoutManager(this, PORTRAIT_COL_SPAN);
-
+        mGridAdapter = new CatAdapter(mGridData);
+        mManager = new GridLayoutManager(this, PORTRAIT_COL_SPAN);
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-            manager.setSpanCount(PORTRAIT_COL_SPAN);
+            mManager.setSpanCount(PORTRAIT_COL_SPAN);
         } else {
-            manager.setSpanCount(LANDSCAPE_COL_SPAN);
-        }
-
-        mGridView.setLayoutManager(manager);
-        mGridView.setAdapter(mGridAdapter);
-        mGridAdapter.replaceData(listData);
-
-        ArrayList<String> stringArrayList;
-        if (this.getIntent().hasExtra(CAT_ARRAY)) {
-            stringArrayList = this.getIntent().getStringArrayListExtra(CAT_ARRAY);
-            for (int i = 0; i < stringArrayList.size(); i += PARSE_STEP) {
-                listData.add(new Cat(stringArrayList.get(i),
-                        stringArrayList.get(i + 1),
-                        stringArrayList.get(i + 2)));
-            }
+            mManager.setSpanCount(LANDSCAPE_COL_SPAN);
         }
     }
 
